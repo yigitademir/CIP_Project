@@ -1,58 +1,52 @@
 import time
-import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+import pandas as pd
 
-# Set up Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Run in headless mode
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
+# Initialize the Web Driver
+driver = webdriver.Chrome()  # Ensure that ChromeDriver is installed and in your PATH
 
-# Create a WebDriver instance
-driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
+try:
+    # Open the specific FRED series page for Effective Federal Funds Rate
+    url = 'https://fred.stlouisfed.org/series/RIFSPFFNB'
+    driver.get(url)
 
-# Define the URL for FRED
-url = "https://fred.stlouisfed.org/"
-driver.get(url)
+    # Wait for the historical data table to load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, 'fred-table'))
+    )
 
-# Wait for the page to load and search for interest rates
-search_box = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.NAME, "q"))
-)
-search_box.send_keys("interest rates")
-search_box.submit()
+    # Get the page source and parse it with BeautifulSoup
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-# Wait for results to load
-time.sleep(5)
+    # Find the historical data table
+    data_table = soup.find('table', class_='fred-table')
 
-# Scrape the page
-soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # Extract data from the table
+    rows = data_table.find_all('tr')
+    data = []
 
-# Find the relevant data table
-# You may need to inspect the HTML structure to locate the data correctly
-# This example assumes interest rates data is in a table with specific classes
+    for row in rows[1:]:  # Skip the header row
+        columns = row.find_all('td')
+        if len(columns) == 2:  # Ensure there are two columns (Date and Rate)
+            date = columns[0].text.strip()
+            rate = columns[1].text.strip()
+            data.append({'Date': date, 'Rate': rate})
 
-tables = soup.find_all("table")
+    # Convert the list of dictionaries to a DataFrame
+    interest_rates_df = pd.DataFrame(data)
 
-# Example of how to extract data (modify this based on actual HTML structure)
-interest_rates = []
-for table in tables:
-    rows = table.find_all("tr")
-    for row in rows:
-        cols = row.find_all("td")
-        cols = [ele.text.strip() for ele in cols]
-        if cols:  # Check if the row has data
-            interest_rates.append(cols)
+    # Filter the DataFrame for dates between 2021 and 2024
+    interest_rates_df['Date'] = pd.to_datetime(interest_rates_df['Date'])
+    filtered_rates_df = interest_rates_df[(interest_rates_df['Date'] >= '2021-01-01') &
+                                          (interest_rates_df['Date'] <= '2024-12-31')]
 
-# Convert the list to a DataFrame for easier manipulation
-df = pd.DataFrame(interest_rates, columns=["Date", "Interest Rate"])
-print(df)
+    # Save the filtered DataFrame to a CSV file
+    filtered_rates_df.to_csv('federal_funds_rate_2021_2024.csv', index=False)
 
-# Clean up
-driver.quit()
+finally:
+    # Close the driver
+    driver.quit()
