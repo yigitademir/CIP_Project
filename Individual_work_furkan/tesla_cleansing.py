@@ -22,9 +22,9 @@ tesla_data_cleaned = tesla_data_cleaned.rename(columns={
 # Step 5: Check if 'Close' and 'Adj_Close' columns are identical
 are_columns_identical = tesla_data_cleaned['Close'].equals(tesla_data_cleaned['Adj_Close'])
 
-# # If columns are identical, remove the 'Adj_Close' column
-# if are_columns_identical:
-#     tesla_data_cleaned = tesla_data_cleaned.drop(columns=['Adj_Close'])
+# If columns are identical, remove the 'Adj_Close' column
+if are_columns_identical:
+    tesla_data_cleaned = tesla_data_cleaned.drop(columns=['Adj_Close'])
     
 print("Are the 'Close' and 'Adj_Close' columns identical?:", are_columns_identical)
 
