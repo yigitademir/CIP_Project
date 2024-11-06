@@ -13,7 +13,6 @@ driver = webdriver.Chrome()
 # ActionChain
 actions = ActionChains(driver)
 
-
 # Part 1 Navigate to website
 driver.get("https://coincodex.com/")
 time.sleep(2)
@@ -57,6 +56,7 @@ try:
     start_date_button_css = "body > app-root > app-root > div > div > div > div > app-coin-history-data > section.seo-section.section-container > div > div.options-bar.d-flex.justify-content-between.align-items-center > div.date-select.button.button-secondary.dateToggle > div.date-picker > app-date-range-picker > div > div > div > div.calendars > input[type=date]:nth-child(1)"
     end_date_button_css = "body > app-root > app-root > div > div > div > div > app-coin-history-data > section.seo-section.section-container > div > div.options-bar.d-flex.justify-content-between.align-items-center > div.date-select.button.button-secondary.dateToggle > div.date-picker > app-date-range-picker > div > div > div > div.calendars > input[type=date]:nth-child(2)"
     select_button_css = "body > app-root > app-root > div > div > div > div > app-coin-history-data > section.seo-section.section-container > div > div.options-bar.d-flex.justify-content-between.align-items-center > div.date-select.button.button-secondary.dateToggle > div.date-picker > app-date-range-picker > div > div > div > div.dates-select > div.select > button"
+
     start_date_button = WebDriverWait(driver, 3).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, start_date_button_css))
     )
@@ -73,6 +73,7 @@ try:
     # Send date input
     start_date = "01012021"
     end_date = "01012024"
+
     start_date_button.send_keys(start_date)
     time.sleep(1)
     end_date_button.send_keys(end_date)
@@ -82,18 +83,12 @@ try:
     time.sleep(2)
 
     # Part 2 BeautifulSoup Scrape
-    # Parse the page source
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    table = soup.find("table", class_="formatted-table full-size-table")
-
-    # Extract headers
     data = []
-    headers = [header.text for header in table.find_all("th")]
     print("Scrape starting...")
 
-    # Iterate through 37 pages.
-    for i in range(36):
-        # Check if the first popup appears and close it if so
+    # Iterate through all pages.
+    for i in range(37):
+        # Check if the first popup appears
         try:
             first_popup_button = WebDriverWait(driver, 1).until(
                 EC.element_to_be_clickable((By.ID, "onesignal-slidedown-cancel-button"))
@@ -102,7 +97,7 @@ try:
             print("First popup closed.")
             time.sleep(1)
 
-            # Check if the second popup appears and close it if so
+            # Check if the second popup appears
             try:
                 second_popup_button = WebDriverWait(driver, 1).until(
                     EC.element_to_be_clickable((By.ID, "onesignal-slidedown-cancel-button"))
@@ -116,6 +111,14 @@ try:
         except:
             print("No popup detected.")
 
+        # Parse/Update the page source
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        table = soup.find("table", class_="formatted-table full-size-table")
+
+        #Get the headers from first row
+        if i == 0:
+            headers = [header.text for header in table.find_all("th")]
+
         # Proceed with scraping the table data
         rows = table.find_all("tr")
         for row in rows[1:]:
@@ -123,18 +126,18 @@ try:
             data.append([cell.text.strip() for cell in cells])
         print("Page", i+1, "completed.")
 
-        # Move to the page indicator and click to go to the next page
-        page_indicator = driver.find_element(By.XPATH, "//a[@aria-label = 'Next']")
-        actions.move_to_element(page_indicator).perform()
-        page_indicator.click()
-        time.sleep(1)
+        # Move to the page indicator and click to go to the next page except last page
+        if i != 36:
+            page_indicator = driver.find_element(By.XPATH, "//a[@aria-label = 'Next']")
+            actions.move_to_element(page_indicator).perform()
+            page_indicator.click()
+            time.sleep(1)
 
     #Create dataframe
     df = pd.DataFrame(data, columns=headers)
     print(df)
     df.to_csv("eth_scraped_data.csv", index=False)
     print("Data scraped.")
-
 
 except Exception as e:
     print("Error:", e)
