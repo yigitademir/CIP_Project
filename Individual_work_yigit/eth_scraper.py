@@ -33,6 +33,7 @@ try:
         EC.element_to_be_clickable((By.XPATH, "//a[@href = '/crypto/ethereum/']"))
     )
     print("Ethereum link found.")
+    actions.move_to_element(ethereum_link).perform()
     ethereum_link.click()
     time.sleep(1)
 
