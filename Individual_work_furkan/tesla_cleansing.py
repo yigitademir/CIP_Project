@@ -1,6 +1,6 @@
 import pandas as pd
 
-tesla_data = pd.read_csv('historical_data_combined.csv')
+tesla_data = pd.read_csv('historical_data_scrapped.csv')
 
 # Step 1: Identify data types of each column
 data_types = tesla_data.dtypes
@@ -40,3 +40,7 @@ tesla_data_cleaned['Close_Change'] = tesla_data_cleaned['Close'].pct_change() * 
 total_rows, total_columns = tesla_data_cleaned.shape
 print(f"\nTotal Rows: {total_rows}, Total Columns: {total_columns}")
 print("\nPreview of Cleaned Dataset:\n", tesla_data_cleaned.head())
+
+df = pd.DataFrame(tesla_data_cleaned)
+print(df)
+df.to_csv("historical_data_cleaned.csv", index=False)

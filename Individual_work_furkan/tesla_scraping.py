@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+import re
 
 # Set up Selenium WebDriver
 driver = webdriver.Chrome()
@@ -12,19 +13,6 @@ driver = webdriver.Chrome()
 # Load the webpage
 driver.get("https://finance.yahoo.com/quote/TSLA/history/?guccounter=1")
 
-"""
-# Step 1: Handle the "Reject All" Button on Page Load
-try:
-    # Wait for the "Reject All" button to appear
-    reject_btn = WebDriverWait(driver, 15).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Reject all')]"))
-    )
-    # Click the "Reject All" button
-    reject_btn.click()
-    print("Clicked the 'Reject All' button.")
-except Exception as e:
-    print("Could not find or click the 'Reject All' button.", e)
-"""
 # reject privacy
 # Step 1: Locate and click the scroll-down button
 try:
@@ -63,36 +51,35 @@ except Exception as e:
 # Step 4: Wait until the date button is clickable and then click it
 wait = WebDriverWait(driver, 10)
 date_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-ylk*='date-select']")))
+time.sleep(3)
 date_button.click()
-time.sleep(2)
+time.sleep(5)
 
 # Step 5: Input Desired Date Range
 wait.until(EC.presence_of_element_located((By.NAME, "startDate")))
+time.sleep(3)
 start_date = driver.find_element(By.NAME, "startDate")
 end_date = driver.find_element(By.NAME, "endDate")
 
 # Define your desired dates
 start_date.clear()
 start_date.send_keys("01/01/2021")  # Example start date
-time.sleep(2)
+time.sleep(3)
 end_date.clear()
 end_date.send_keys("01/01/2024")  # Example end date
-time.sleep(2)
+time.sleep(3)
 
 # Click the 'Done' button to apply date range
 done_button = driver.find_element(By.CSS_SELECTOR, "button.primary-btn[data-ylk*='fltr']")
 done_button.click()
 
-for _ in range(5):  # Scroll 5 times
-    driver.execute_script("window.scrollBy(0, 1000);")  # Scroll down by 1000 pixels
-    time.sleep(1)  # Wait a bit for content to load
-
 # Step 6: Extract the Data from the Loaded Table
-time.sleep(5)  # Allow some time for the table to update
+time.sleep(2)  # Allow some time for the table to update
 
 # Use BeautifulSoup to parse the table
 soup = BeautifulSoup(driver.page_source, 'html.parser')
-table = soup.find('table', class_='table yf-h2urb6 noDl')
+table_container = soup.find("div", class_=re.compile(r"\btable-container\b"))
+table = table_container.find("table") if table_container else None
 
 # Extract headers and rows
 headers, historical_data = [], []
@@ -105,13 +92,14 @@ if table:
         cols = row.find_all('td')
         cols = [col.text.strip() for col in cols]
         historical_data.append(cols)
+        
 
 # Convert to DataFrame
 df = pd.DataFrame(historical_data, columns=headers)
 print(df)
 
 # Optionally, save the DataFrame to a CSV file
-df.to_csv("historical_data_combined.csv", index=False)
+df.to_csv("historical_data_scrapped.csv", index=False)
 
 # Close the browser
 driver.quit()
