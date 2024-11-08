@@ -12,7 +12,7 @@ print(df.shape)
 print(df.head())
 print(df.columns)
 
-# Drop unnecessary columns and chang names
+# Drop unnecessary columns and change names
 df = df.drop("Date End", axis=1)
 df = df.drop("Market Cap", axis=1)
 df.rename(columns = {"Date Start": "Date",
