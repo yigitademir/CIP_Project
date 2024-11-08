@@ -34,8 +34,8 @@ try:
     )
     print("Ethereum link found.")
     actions.move_to_element(ethereum_link).perform()
+    time.sleep(2)
     ethereum_link.click()
-    time.sleep(1)
 
     #Click on the historical data
     hist_data_button = WebDriverWait(driver, 3).until(
@@ -43,7 +43,6 @@ try:
     )
     print("Historical data button found.")
     hist_data_button.click()
-    time.sleep(1)
 
     # Find and click time period button
     time_period_button_css = "body > app-root > app-root > div > div > div > div > app-coin-history-data > section.seo-section.section-container > div > div.options-bar.d-flex.justify-content-between.align-items-center > div.date-select.button.button-secondary"
@@ -94,6 +93,7 @@ try:
             first_popup_button = WebDriverWait(driver, 1).until(
                 EC.element_to_be_clickable((By.ID, "onesignal-slidedown-cancel-button"))
             )
+            time.sleep(1)
             first_popup_button.click()
             print("First popup closed.")
             time.sleep(1)
