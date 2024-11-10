@@ -14,7 +14,7 @@ driver = webdriver.Chrome()
 driver.get("https://finance.yahoo.com/quote/TSLA/history/?guccounter=1")
 
 # reject privacy
-# Step 1: Locate and click the scroll-down button
+# Locate and click the scroll-down button
 try:
     scroll_down_btn_xpath = '//*[@id="scroll-down-btn"]'
     scroll_down_btn = WebDriverWait(driver, 10).until(
@@ -26,7 +26,7 @@ try:
 except:
     pass
 
-# Step 2: Wait until the "Reject" button is visible and click it
+# Wait until the "Reject" button is visible and click it
 try:
     reject_btn_xpath = '//*[@id="consent-page"]/div/div/div/form/div[2]/div[2]/button[2]'
     reject_btn = WebDriverWait(driver, 10).until(
@@ -36,7 +36,7 @@ try:
 except:
     print("empty")
 
-# Step 3: Handle the intermediate page if it appears
+# Handle the intermediate page if it appears
 try:
     # Wait for the "If you are not redirected" link to appear
     redirect_link = WebDriverWait(driver, 10).until(
@@ -48,20 +48,20 @@ try:
 except Exception as e:
     print("Redirect link not found; continuing if already on the target page.", e)
 
-# Step 4: Wait until the date button is clickable and then click it
+# Wait until the date button is clickable and then click it
 wait = WebDriverWait(driver, 10)
 date_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-ylk*='date-select']")))
 time.sleep(3)
 date_button.click()
 time.sleep(5)
 
-# Step 5: Input Desired Date Range
+# Input Desired Date Range
 wait.until(EC.presence_of_element_located((By.NAME, "startDate")))
 time.sleep(3)
 start_date = driver.find_element(By.NAME, "startDate")
 end_date = driver.find_element(By.NAME, "endDate")
 
-# Define your desired dates
+# Define desired dates
 start_date.clear()
 start_date.send_keys("01/01/2021")  # Example start date
 time.sleep(3)
@@ -73,7 +73,7 @@ time.sleep(3)
 done_button = driver.find_element(By.CSS_SELECTOR, "button.primary-btn[data-ylk*='fltr']")
 done_button.click()
 
-# Step 6: Extract the Data from the Loaded Table
+# Extract the Data from the Loaded Table
 time.sleep(2)  # Allow some time for the table to update
 
 # Use BeautifulSoup to parse the table
@@ -98,8 +98,8 @@ if table:
 df = pd.DataFrame(historical_data, columns=headers)
 print(df)
 
-# Optionally, save the DataFrame to a CSV file
-df.to_csv("historical_data_scrapped.csv", index=False)
+# Save the DataFrame to a CSV file
+df.to_csv("tesla_scrapped_data.csv", index=False)
 
 # Close the browser
 driver.quit()
