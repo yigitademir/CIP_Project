@@ -54,6 +54,7 @@ ethereum_prices["ETH_Daily_Difference"] = round(ethereum_prices["ETH_High"] -  e
 
 # Find change in percentage compared the day before
 ethereum_prices["1D%"] = round(ethereum_prices["ETH_Close"].pct_change() * 100 , 2)
+ethereum_prices["1D%"] = ethereum_prices["1D%"].fillna(0)
 
 print(ethereum_prices.head())
 
