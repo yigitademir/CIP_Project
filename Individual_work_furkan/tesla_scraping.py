@@ -99,7 +99,7 @@ df = pd.DataFrame(historical_data, columns=headers)
 print(df)
 
 # Save the DataFrame to a CSV file
-df.to_csv("tesla_scrapped_data.csv", index=False)
+df.to_csv("tesla_scraped_data.csv", index=False)
 
 # Close the browser
 driver.quit()

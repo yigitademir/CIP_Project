@@ -1,6 +1,6 @@
 import pandas as pd
 
-tesla_data = pd.read_csv('historical_data_scrapped.csv')
+tesla_data = pd.read_csv('tesla_scraped_data.csv')
 
 # Step 1: Identify data types of each column
 data_types = tesla_data.dtypes
@@ -39,10 +39,10 @@ print("Are the 'Close' and 'Adj_Close' columns identical?:", are_columns_identic
 # Step 6: Add a new column: the difference between 'High' and 'Low' columns
 tesla_data_cleaned['Tesla_High'] = pd.to_numeric(tesla_data_cleaned['Tesla_High'], errors='coerce')
 tesla_data_cleaned['Tesla_Low'] = pd.to_numeric(tesla_data_cleaned['Tesla_Low'], errors='coerce')
-tesla_data_cleaned['Tesla_Intraday_Range'] = tesla_data_cleaned['Tesla_High'] - tesla_data_cleaned['Tesla_Low']
+tesla_data_cleaned['Tesla_Intraday_Range'] = round(tesla_data_cleaned['Tesla_High'] - tesla_data_cleaned['Tesla_Low'], 2)
 
 # Step 7: Add a new column: change in 'Close' compared to the previous day
-tesla_data_cleaned['Tesla_1D%'] = tesla_data_cleaned['Tesla_Close'].pct_change() * 100
+tesla_data_cleaned['Tesla_1D%'] = round(tesla_data_cleaned['Tesla_Close'].pct_change() * 100, 2)
 
 tesla_data_cleaned['Tesla_1D%'] = tesla_data_cleaned['Tesla_1D%'].fillna(0)
 
