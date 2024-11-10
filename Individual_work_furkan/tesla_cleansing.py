@@ -39,7 +39,7 @@ print("Are the 'Close' and 'Adj_Close' columns identical?:", are_columns_identic
 # Step 6: Add a new column: the difference between 'High' and 'Low' columns
 tesla_data_cleaned['Tesla_High'] = pd.to_numeric(tesla_data_cleaned['Tesla_High'], errors='coerce')
 tesla_data_cleaned['Tesla_Low'] = pd.to_numeric(tesla_data_cleaned['Tesla_Low'], errors='coerce')
-tesla_data_cleaned['Tesla_Daily_Difference'] = tesla_data_cleaned['Tesla_High'] - tesla_data_cleaned['Tesla_Low']
+tesla_data_cleaned['Tesla_Intraday_Range'] = tesla_data_cleaned['Tesla_High'] - tesla_data_cleaned['Tesla_Low']
 
 # Step 7: Add a new column: change in 'Close' compared to the previous day
 tesla_data_cleaned['Tesla_1D%'] = tesla_data_cleaned['Tesla_Close'].pct_change() * 100
