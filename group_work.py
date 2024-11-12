@@ -18,7 +18,7 @@ merged_data.to_csv("merged_data.csv")
 # first questions 
 data = pd.read_csv('merged_data.csv')
 
-# Calculating daily percentage changes for each specified interest rate term (short/medium/long term)
+# Calculating daily percentage changes for each specified yield rates term (short/medium/long term)
 data['1_mo_change'] = data['1_mo'].pct_change(fill_method=None)
 data['3_mo_change'] = data['3_mo'].pct_change(fill_method=None)
 data['1_yr_change'] = data['1_yr'].pct_change(fill_method=None)
@@ -27,13 +27,13 @@ data['10_yr_change'] = data['10_yr'].pct_change(fill_method=None)
 data['30_yr_change'] = data['30_yr'].pct_change(fill_method=None)
 
 # Tesla: Correlation Analysis
-# Short-term: 1 month and 3 month interest rate changes
+# Short-term: 1 month and 3 month yield rates changes
 short_term_corr = data[['Tesla_1D%', '1_mo_change', '3_mo_change']].corr()
 
-# Medium-term: 1 year and 5 year interest rate changes
+# Medium-term: 1 year and 5 year yield rates changes
 medium_term_corr = data[['Tesla_1D%', '1_yr_change', '5_yr_change']].corr()
 
-# Long-term: 10 year and 30 year interest rate changes
+# Long-term: 10 year and 30 year yield rates changes
 long_term_corr = data[['Tesla_1D%', '10_yr_change', '30_yr_change']].corr()
 
 # Display the results
