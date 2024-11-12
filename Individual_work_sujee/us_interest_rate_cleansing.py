@@ -4,22 +4,16 @@ import pandas as pd
 file_path = r'C:\Users\Sujeethan\switchdrive\SyncVM\MDS\CIP\Project\Individual_work_sujee\Merged_Treasury_Yield_Curve.csv'
 df = pd.read_csv(file_path)
 
+# 1. Remove the columns '4 Mo' and 'Year' if they exist
+columns_to_drop = ['4 Mo', 'Year']
+df.drop(columns=[col for col in columns_to_drop if col in df.columns], inplace=True)
+
 # Cleaning steps:
 
-# 1. Handle Missing Values - Drop columns with more than 50% missing values and fill others with median value.
+# 2. Handle Missing Values - Drop columns with more than 50% missing values and fill others with median value.
 threshold = 0.5 * len(df)
 df = df.dropna(axis=1, thresh=threshold)  # Drop columns
 df.fillna(df.median(numeric_only=True), inplace=True)  # Fill remaining NaNs with median
-
-# 2. Merge Duplicate Columns - Assume columns with similar names need merging
-def merge_columns(df, col1, col2):
-    df[col1] = df[col1].combine_first(df[col2])
-    df.drop(columns=[col2], inplace=True)
-
-if 'COUPON EQUIVALENT.1' in df.columns:
-    merge_columns(df, 'COUPON EQUIVALENT', 'COUPON EQUIVALENT.1')
-if 'COUPON EQUIVALENT.2' in df.columns:
-    merge_columns(df, 'COUPON EQUIVALENT', 'COUPON EQUIVALENT.2')
 
 # 3. Rename Columns for Consistency
 df.columns = df.columns.str.replace('.', '', regex=False).str.replace(' ', '_').str.lower()
@@ -27,19 +21,18 @@ df.columns = df.columns.str.replace('.', '', regex=False).str.replace(' ', '_').
 # 4. Convert 'date' to datetime format
 df['date'] = pd.to_datetime(df['date'], errors='coerce')
 
-# 5. Remove Rows with Invalid Dates
-df = df[df['date'].notna()]
-
-# 6. Handle Outliers - Example method: Clipping to percentiles (5th and 95th)
-numeric_cols = df.select_dtypes(include='number').columns
-df[numeric_cols] = df[numeric_cols].clip(lower=df[numeric_cols].quantile(0.05), upper=df[numeric_cols].quantile(0.95), axis=1)
-
-# 7. Drop Redundant Columns - Example: 'year' column derived from 'date'
-if 'year' in df.columns:
-    df.drop(columns=['year'], inplace=True)
-
-# 8. Check and Drop Duplicates
+# 5. Check and Drop Duplicates
 df.drop_duplicates(inplace=True)
+
+# 6. Change all numeric values to two decimal points except for 'date'
+numeric_cols = df.select_dtypes(include='number').columns
+for col in numeric_cols:
+    if col in df.columns:  # Ensure the column still exists
+        df[col] = df[col].round(2)
+
+# 7. Rename columns without modifying 'date'
+new_column_names = {col: f"rate_{col}" for col in df.columns if col != 'date'}
+df.rename(columns=new_column_names, inplace=True)
 
 # Save the cleaned data
 cleaned_file_path = r'C:\Users\Sujeethan\switchdrive\SyncVM\MDS\CIP\Project\Individual_work_sujee\Cleaned_Treasury_Yield_Curve.csv'
