@@ -1,4 +1,5 @@
 import pandas as pd
+import statsmodels.api as sm
 
 tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
 interest = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield_Curve.csv")
@@ -15,11 +16,9 @@ merged_data.to_csv("merged_data.csv")
 
 #%%
 # first questions 
-import pandas as pd
-import statsmodels.api as sm
-data = pd.read_csv('/Users/s.furkan/merged_data.csv')
+data = pd.read_csv('merged_data.csv')
 
-# Calculating daily percentage changes for each specified interest rate term
+# Calculating daily percentage changes for each specified interest rate term (short/medium/long term)
 data['1_mo_change'] = data['1_mo'].pct_change(fill_method=None)
 data['3_mo_change'] = data['3_mo'].pct_change(fill_method=None)
 data['1_yr_change'] = data['1_yr'].pct_change(fill_method=None)
@@ -57,7 +56,7 @@ print("\nMedium-term ETH Correlation:\n", medium_term_corr_eth)
 print("\nLong-term ETH Correlation:\n", long_term_corr_eth)
 
 # Tesla: Regression Analysis
-# Define the target variable for all regressions
+# The target variable as Tesla_1D% for all regressions
 y = data['Tesla_1D%']
 
 # Short-term regression analysis
@@ -75,7 +74,7 @@ X_long_term = data[['10_yr_change', '30_yr_change']]
 X_long_term = sm.add_constant(X_long_term)
 long_term_model = sm.OLS(y, X_long_term, missing='drop').fit()
 
-# Display regression summaries
+# Regression summaries for Tesla
 print ("\nTESLA Regression Results")
 print("\nShort-term Tesla Regression Results:\n", short_term_model.summary())
 print("\nMedium-term Tesla Regression Results:\n", medium_term_model.summary())
@@ -83,7 +82,7 @@ print("\nLong-term Tesla Regression Results:\n", long_term_model.summary())
 
 
 # Etherium: Regression Analysis
-# Define the target variable as ETH_1D% for all regressions
+# Target variable as ETH_1D% for all regressions
 y_eth = data['ETH_1D%']
 
 # Short-term regression analysis for ETH
@@ -101,7 +100,7 @@ X_long_term_eth = data[['10_yr_change', '30_yr_change']]
 X_long_term_eth = sm.add_constant(X_long_term_eth)
 long_term_model_eth = sm.OLS(y_eth, X_long_term_eth, missing='drop').fit()
 
-# Display regression summaries
+# Regression summaries for ETH
 print ("\nETH Regression Results")
 print("\nShort-term ETH Regression Results:\n", short_term_model.summary())
 print("\nMedium-term ETH Regression Results:\n", medium_term_model.summary())
