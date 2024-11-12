@@ -50,10 +50,11 @@ ethereum_prices = open_days_df.sort_values(by = "Date", ascending = True).reset_
 ethereum_prices.drop("Market", axis=1, inplace=True)
 
 #Add daily difference column
-ethereum_prices["ETH_Daily_Difference"] = round(ethereum_prices["ETH_High"] -  ethereum_prices["ETH_Low"], 2)
+ethereum_prices["ETH_Intraday_Range"] = round(ethereum_prices["ETH_High"] -  ethereum_prices["ETH_Low"], 2)
 
 # Find change in percentage compared the day before
-ethereum_prices["1D%"] = round(ethereum_prices["ETH_Close"].pct_change() * 100 , 2)
+ethereum_prices["ETH_1D%"] = round(ethereum_prices["ETH_Close"].pct_change() * 100 , 2)
+ethereum_prices["ETH_1D%"] = ethereum_prices["ETH_1D%"].fillna(0)
 
 print(ethereum_prices.head())
 
