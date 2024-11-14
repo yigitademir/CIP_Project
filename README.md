@@ -16,15 +16,15 @@ tesla_cleansing.py: Python script for cleansing and preprocessing scraped data.
 
 Individual_work_sujee/
 
-tesla_scraper.py: Python script for scraping U.S. Treasury Yield data.
+us_interest_rate_scraping.py: Python script for scraping U.S. Treasury Yield data.
 
-tesla_cleansing.py: Python script for cleansing and preprocessing scraped data.
+us_interest_rate_cleansing.py: Python script for cleansing and preprocessing scraped data.
 
 Individual_work_yigit/
 
-tesla_scraper.py: Python script for scraping Ethereum Prices data.
+eth_scraper.py: Python script for scraping Ethereum Prices data.
 
-tesla_cleansing.py: Python script for cleansing and preprocessing scraped data.
+eth_cleansing.py: Python script for cleansing and preprocessing scraped data.
 
 Authors
 
