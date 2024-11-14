@@ -77,5 +77,5 @@ merged_data = merged_data.sort_values(by='Date')
 
 
 # Save the merged DataFrame to a new CSV file
-merged_data.to_csv('Merged_Treasury_Yield.csv', index=False)
-print("All data merged, sorted by date, and saved to Merged_Treasury_Yield.csv")
+merged_data.to_csv('Merged_Treasury_Yield_Curve.csv', index=False)
+print("All data merged, sorted by date, and saved to Merged_Treasury_Yield_Curve.csv")
