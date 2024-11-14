@@ -114,28 +114,59 @@ print("\nLong-term ETH Regression Results:\n", long_term_model.summary())
 #2nd Question Analysis
 #Is there a predictive relationship between shifts in short-term interest rates (1_mo, 3_mo) and intraday volatility of Tesla and Ethereum?
 
+print(30*'*','Question 2', 30*'*')
+
 # Calculate intraday volatility for Tesla and Ethereum
 data['tesla_intraday_volatility'] = (data['Tesla_1D%'] / data['Tesla_Open']) * 100
 data['eth_intraday_volatility'] = (data['ETH_1D%'] / data['ETH_Open']) * 100
 
 # Exploratory Data Analysis
 # Scatter plot for Tesla
-plt.scatter(data['1_mo_change'], data['tesla_intraday_volatility'])
-plt.xlabel('1-Month Yield Change (%)')
-plt.ylabel('Tesla Intraday Volatility (%)')
-plt.title('Tesla Intraday Volatility vs 1-Month Yield Change')
-#plt.show()
+# Create side-by-side scatter plots
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-# Scatter plot for Ethereum
-plt.scatter(data['3_mo_change'], data['eth_intraday_volatility'])
-plt.xlabel('3-Month Yield Change (%)')
-plt.ylabel('Ethereum Intraday Volatility (%)')
-plt.title('Ethereum Intraday Volatility vs 3-Month Yield Change')
-#plt.show()
+# Scatter plot for 1-month yield change
+axes[0].scatter(data['1_mo_change'], data['tesla_intraday_volatility'])
+axes[0].set_xlabel('1-Month Yield Change (%)')
+axes[0].set_ylabel('Tesla Intraday Volatility (%)')
+axes[0].set_title('Tesla Intraday Volatility vs 1-Month Yield Change')
+
+# Scatter plot for 3-month yield change
+axes[1].scatter(data['3_mo_change'], data['tesla_intraday_volatility'])
+axes[1].set_xlabel('3-Month Yield Change (%)')
+axes[1].set_ylabel('Tesla Intraday Volatility (%)')
+axes[1].set_title('Tesla Intraday Volatility vs 3-Month Yield Change')
+
+plt.tight_layout()
+plt.show()
+
+# Create side-by-side scatter plots
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Scatter plot for 1-month yield change
+axes[0].scatter(data['1_mo_change'], data['eth_intraday_volatility'])
+axes[0].set_xlabel('1-Month Yield Change (%)')
+axes[0].set_ylabel('Ethereum Intraday Volatility (%)')
+axes[0].set_title('Ethereum Intraday Volatility vs 1-Month Yield Change')
+
+# Scatter plot for 3-month yield change
+axes[1].scatter(data['3_mo_change'], data['eth_intraday_volatility'])
+axes[1].set_xlabel('3-Month Yield Change (%)')
+axes[1].set_ylabel('Ethereum Intraday Volatility (%)')
+axes[1].set_title('Ethereum Intraday Volatility vs 3-Month Yield Change')
+
+plt.tight_layout()
+plt.show()
+
 
 # Correlation between short-term yield changes and intraday volatility
 correlation_matrix = data[['tesla_intraday_volatility', 'eth_intraday_volatility', '1_mo_change', '3_mo_change']].corr()
+
+# Display full correlation matrix
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
 print("Correlation Matrix:\n", correlation_matrix)
+
 
 # Define independent variables (1-month and 3-month yield changes) and add a constant
 X = data[['1_mo_change', '3_mo_change']]
