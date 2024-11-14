@@ -1,5 +1,7 @@
 import pandas as pd
 import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from debugpy.adapter.components import missing
 
 tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
 interest = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield_Curve.csv")
@@ -13,6 +15,7 @@ merged_data = pd.merge(merged_data, interest, on="Date", how="left")
 print(merged_data.head())
 
 merged_data.to_csv("merged_data.csv")
+data = merged_data
 
 #%%
 # first questions 
@@ -41,7 +44,7 @@ print("Short-term Tesla Correlation:\n", short_term_corr)
 print("\nMedium-term Tesla Correlation:\n", medium_term_corr)
 print("\nLong-term Tesla Correlation:\n", long_term_corr)
 
-# Etherium: Correlation Analysis
+# Ethereum: Correlation Analysis
 # Short-term (1 month and 3 month rate changes)
 short_term_corr_eth = data[['ETH_1D%', '1_mo_change', '3_mo_change']].corr()
 
@@ -81,7 +84,7 @@ print("\nMedium-term Tesla Regression Results:\n", medium_term_model.summary())
 print("\nLong-term Tesla Regression Results:\n", long_term_model.summary())
 
 
-# Etherium: Regression Analysis
+# Ethereum: Regression Analysis
 # Target variable as ETH_1D% for all regressions
 y_eth = data['ETH_1D%']
 
@@ -107,3 +110,43 @@ print("\nMedium-term ETH Regression Results:\n", medium_term_model.summary())
 print("\nLong-term ETH Regression Results:\n", long_term_model.summary())
 
 # %%
+
+#2nd Question Analysis
+#Is there a predictive relationship between shifts in short-term interest rates (1_mo, 3_mo) and intraday volatility of Tesla and Ethereum?
+
+# Calculate intraday volatility for Tesla and Ethereum
+data['tesla_intraday_volatility'] = (data['Tesla_1D%'] / data['Tesla_Open']) * 100
+data['eth_intraday_volatility'] = (data['ETH_1D%'] / data['ETH_Open']) * 100
+
+# Exploratory Data Analysis
+# Scatter plot for Tesla
+plt.scatter(data['1_mo_change'], data['tesla_intraday_volatility'])
+plt.xlabel('1-Month Yield Change (%)')
+plt.ylabel('Tesla Intraday Volatility (%)')
+plt.title('Tesla Intraday Volatility vs 1-Month Yield Change')
+#plt.show()
+
+# Scatter plot for Ethereum
+plt.scatter(data['3_mo_change'], data['eth_intraday_volatility'])
+plt.xlabel('3-Month Yield Change (%)')
+plt.ylabel('Ethereum Intraday Volatility (%)')
+plt.title('Ethereum Intraday Volatility vs 3-Month Yield Change')
+#plt.show()
+
+# Correlation between short-term yield changes and intraday volatility
+correlation_matrix = data[['tesla_intraday_volatility', 'eth_intraday_volatility', '1_mo_change', '3_mo_change']].corr()
+print("Correlation Matrix:\n", correlation_matrix)
+
+# Define independent variables (1-month and 3-month yield changes) and add a constant
+X = data[['1_mo_change', '3_mo_change']]
+X = sm.add_constant(X)
+
+# Tesla intraday volatility as the dependent variable
+y_tesla_vol = data['tesla_intraday_volatility'].dropna()
+model_tesla_vol = sm.OLS(y_tesla_vol, X.loc[y_tesla_vol.index], missing= 'drop').fit()
+print("Tesla Intraday Volatility Regression Results:\n", model_tesla_vol.summary())
+
+# Ethereum intraday volatility as the dependent variable
+y_eth_vol = data['eth_intraday_volatility'].dropna()
+model_eth_vol = sm.OLS(y_eth_vol, X.loc[y_eth_vol.index], missing= 'drop').fit()
+print("Ethereum Intraday Volatility Regression Results:\n", model_eth_vol.summary())
