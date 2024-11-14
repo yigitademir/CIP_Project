@@ -185,7 +185,7 @@ print("Ethereum Intraday Volatility Regression Results:\n", model_eth_vol.summar
 
 # %%
 
-#2nd Question Analysis
+#3rd Question Analysis
 # What is the correlation between medium- to long-term interest rates (e.g., 5_yr, 10_yr) and the volume of trades for Tesla and Ethereum over time?
 
 print(30*'*','Research Question 3', 30*'*')
