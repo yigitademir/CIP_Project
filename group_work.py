@@ -22,12 +22,12 @@ data = merged_data
 data = pd.read_csv('merged_data.csv')
 
 # Calculating daily percentage changes for each specified yield rates term (short/medium/long term)
-data['1_mo_change'] = data['1_mo'].pct_change(fill_method=None)
-data['3_mo_change'] = data['3_mo'].pct_change(fill_method=None)
-data['1_yr_change'] = data['1_yr'].pct_change(fill_method=None)
-data['5_yr_change'] = data['5_yr'].pct_change(fill_method=None)
-data['10_yr_change'] = data['10_yr'].pct_change(fill_method=None)
-data['30_yr_change'] = data['30_yr'].pct_change(fill_method=None)
+data['1_mo_change'] = data['rate_1_mo'].pct_change(fill_method=None)
+data['3_mo_change'] = data['rate_3_mo'].pct_change(fill_method=None)
+data['1_yr_change'] = data['rate_1_yr'].pct_change(fill_method=None)
+data['5_yr_change'] = data['rate_5_yr'].pct_change(fill_method=None)
+data['10_yr_change'] = data['rate_10_yr'].pct_change(fill_method=None)
+data['30_yr_change'] = data['rate_30_yr'].pct_change(fill_method=None)
 
 # Tesla: Correlation Analysis
 # Short-term: 1 month and 3 month yield rates changes
