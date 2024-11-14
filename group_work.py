@@ -114,7 +114,7 @@ print("\nLong-term ETH Regression Results:\n", long_term_model.summary())
 #2nd Question Analysis
 #Is there a predictive relationship between shifts in short-term interest rates (1_mo, 3_mo) and intraday volatility of Tesla and Ethereum?
 
-print(30*'*','Question 2', 30*'*')
+print(30*'*','Research Question 2', 30*'*')
 
 # Calculate intraday volatility for Tesla and Ethereum
 data['tesla_intraday_volatility'] = (data['Tesla_1D%'] / data['Tesla_Open']) * 100
@@ -181,3 +181,33 @@ print("Tesla Intraday Volatility Regression Results:\n", model_tesla_vol.summary
 y_eth_vol = data['eth_intraday_volatility'].dropna()
 model_eth_vol = sm.OLS(y_eth_vol, X.loc[y_eth_vol.index], missing= 'drop').fit()
 print("Ethereum Intraday Volatility Regression Results:\n", model_eth_vol.summary())
+
+
+# %%
+
+#2nd Question Analysis
+# What is the correlation between medium- to long-term interest rates (e.g., 5_yr, 10_yr) and the volume of trades for Tesla and Ethereum over time?
+
+print(30*'*','Research Question 3', 30*'*')
+
+# Correlation Analysis for Tesla's Trading Volume with Medium- to Long-Term Interest Rates
+volume_corr_tesla = data[['Volume', '5_yr', '10_yr']].corr()
+print("\nTesla Volume Correlation with Medium- and Long-Term Interest Rates:\n", volume_corr_tesla)
+
+# Correlation Analysis for Ethereum's Trading Volume with Medium- to Long-Term Interest Rates
+volume_corr_eth = data[['ETH_Volume', '5_yr', '10_yr']].corr()
+print("\nEthereum Volume Correlation with Medium- and Long-Term Interest Rates:\n", volume_corr_eth)
+
+# Regression Analysis for Tesla's Volume with Medium- to Long-Term Interest Rates
+X_tesla_vol = data[['5_yr', '10_yr']]
+y_tesla_vol = data['Volume']
+X_tesla_vol = sm.add_constant(X_tesla_vol)  # Adding a constant term
+tesla_vol_model = sm.OLS(y_tesla_vol, X_tesla_vol, missing='drop').fit()
+print("\nTesla Volume Regression Results:\n", tesla_vol_model.summary())
+
+# Regression Analysis for Ethereum's Volume with Medium- to Long-Term Interest Rates
+X_eth_vol = data[['5_yr', '10_yr']]
+y_eth_vol = data['ETH_Volume']
+X_eth_vol = sm.add_constant(X_eth_vol)  # Adding a constant term
+eth_vol_model = sm.OLS(y_eth_vol, X_eth_vol, missing='drop').fit()
+print("\nEthereum Volume Regression Results:\n", eth_vol_model.summary())
