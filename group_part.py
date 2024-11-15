@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
-from debugpy.adapter.components import missing
 
 # Load the data 
 tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
