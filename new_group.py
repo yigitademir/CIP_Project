@@ -1,10 +1,10 @@
-#%%
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from debugpy.adapter.components import missing
 
+# Load the data 
 tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
 yield_rate = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield.csv")
 ethereum = pd.read_csv("Individual_work_yigit/ethereum_prices.csv")
@@ -12,6 +12,7 @@ ethereum = pd.read_csv("Individual_work_yigit/ethereum_prices.csv")
 # Rename columns for merging consistency
 yield_rate.rename(columns={"date": "Date"}, inplace=True)
 
+# Merge the data
 merged_data = pd.merge(tesla.dropna(subset=['Date']), ethereum.dropna(subset=['Date']), on="Date", how="inner")
 merged_data = pd.merge(merged_data, yield_rate.dropna(subset=['Date']), on="Date", how="inner")
 
@@ -23,7 +24,7 @@ merged_data.to_csv(cleaned_merged_path, index=False)
 print(f"Cleaned merged data saved to: {cleaned_merged_path}")
 print(merged_data.head())
 
-#%%
+
 #1st Question Analysis
 #How do changes in short-term, medium-term, and long-term U.S. Treasury yield rates influence the daily returns of Tesla stock and Ethereum prices?
 
@@ -68,7 +69,7 @@ print("\nShort-term ETH Correlation:\n", short_term_corr_eth)
 print("\nMedium-term ETH Correlation:\n", medium_term_corr_eth)
 print("\nLong-term ETH Correlation:\n", long_term_corr_eth)
 
-#%%
+
 # Tesla: Regression Analysis
 # Combine target variable and independent variables for cleaning
 tesla_combine = pd.concat([data[['1_mo_change', '3_mo_change', '1_yr_change', '5_yr_change', 
@@ -132,8 +133,6 @@ print("\nShort-term Ethereum Regression Results:\n", short_term_eth_model.summar
 print("\nMedium-term Ethereum Regression Results:\n", medium_term_eth_model.summary())
 print("\nLong-term Ethereum Regression Results:\n", long_term_eth_model.summary())
 
-
-# %%
 
 #2nd Question Analysis
 #Is there a predictive relationship between shifts in short-term yield_rate rates (1_mo, 3_mo) and intraday volatility of Tesla and Ethereum?
@@ -216,8 +215,6 @@ model_eth_vol = sm.OLS(y_eth_aligned, X_eth_aligned).fit()
 print("Ethereum Intraday Volatility Regression Results:\n", model_eth_vol.summary())
 
 
-# %%
-
 #3rd Question Analysis
 # What is the correlation between medium- to long-term yield_rate rates (e.g., rate_5_yr, 10rate__yr) and the volume of trades for Tesla and Ethereum over time?
 
@@ -252,4 +249,3 @@ X_eth_vol = sm.add_constant(X_eth_vol)  # Adding a constant term
 eth_vol_model = sm.OLS(y_eth_vol, X_eth_vol, missing='drop').fit()
 print("\nEthereum Volume Regression Results:\n", eth_vol_model.summary())
 
-# %%
