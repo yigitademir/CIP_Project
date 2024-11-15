@@ -125,13 +125,13 @@ data['eth_intraday_volatility'] = (data['ETH_1D%'] / data['ETH_Open']) * 100
 # Create side-by-side scatter plots
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-# Scatter plot for 1-month yield change
+# Scatter plot for 1-month yield change vs Tesla
 axes[0].scatter(data['1_mo_change'], data['tesla_intraday_volatility'])
 axes[0].set_xlabel('1-Month Yield Change (%)')
 axes[0].set_ylabel('Tesla Intraday Volatility (%)')
 axes[0].set_title('Tesla Intraday Volatility vs 1-Month Yield Change')
 
-# Scatter plot for 3-month yield change
+# Scatter plot for 3-month yield change vs Tesla
 axes[1].scatter(data['3_mo_change'], data['tesla_intraday_volatility'])
 axes[1].set_xlabel('3-Month Yield Change (%)')
 axes[1].set_ylabel('Tesla Intraday Volatility (%)')
@@ -143,13 +143,13 @@ plt.show()
 # Create side-by-side scatter plots
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-# Scatter plot for 1-month yield change
+# Scatter plot for 1-month yield change vs ETH
 axes[0].scatter(data['1_mo_change'], data['eth_intraday_volatility'])
 axes[0].set_xlabel('1-Month Yield Change (%)')
 axes[0].set_ylabel('Ethereum Intraday Volatility (%)')
 axes[0].set_title('Ethereum Intraday Volatility vs 1-Month Yield Change')
 
-# Scatter plot for 3-month yield change
+# Scatter plot for 3-month yield change vs ETH
 axes[1].scatter(data['3_mo_change'], data['eth_intraday_volatility'])
 axes[1].set_xlabel('3-Month Yield Change (%)')
 axes[1].set_ylabel('Ethereum Intraday Volatility (%)')
