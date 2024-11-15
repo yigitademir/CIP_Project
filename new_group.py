@@ -5,9 +5,9 @@ import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from debugpy.adapter.components import missing
 
-tesla = pd.read_csv("tesla_prices.csv")
-yield_rate = pd.read_csv("Cleaned_Treasury_Yield.csv")
-ethereum = pd.read_csv("ethereum_prices.csv")
+tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
+yield_rate = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield.csv")
+ethereum = pd.read_csv("Individual_work_yigit/ethereum_prices.csv")
 
 # Rename columns for merging consistency
 yield_rate.rename(columns={"date": "Date"}, inplace=True)
@@ -16,7 +16,6 @@ merged_data = pd.merge(tesla.dropna(subset=['Date']), ethereum.dropna(subset=['D
 merged_data = pd.merge(merged_data, yield_rate.dropna(subset=['Date']), on="Date", how="inner")
 
 # Save the cleaned merged data
-# Save the cleaned merged data to a specified path
 cleaned_merged_path = "cleaned_merged_data.csv"
 merged_data.to_csv(cleaned_merged_path, index=False)
 
@@ -26,8 +25,7 @@ print(merged_data.head())
 
 #%%
 #1st Question Analysis
-#How do changes in short-term, medium-term, 
-#and long-term U.S. Treasury yield rates influence the daily returns of Tesla stock and Ethereum prices? 
+#How do changes in short-term, medium-term, and long-term U.S. Treasury yield rates influence the daily returns of Tesla stock and Ethereum prices?
 
 print(30*'*','Research Question 1', 30*'*')
 
@@ -142,12 +140,6 @@ print("\nLong-term Ethereum Regression Results:\n", long_term_eth_model.summary(
 
 print(30*'*','Research Question 2', 30*'*')
 
-# Ensure numeric conversion and handle non-numeric values
-data['Tesla_Open'] = pd.to_numeric(data['Tesla_Open'], errors='coerce')
-data['Tesla_Intraday_Range'] = pd.to_numeric(data['Tesla_Intraday_Range'], errors='coerce')
-data['ETH_Open'] = pd.to_numeric(data['ETH_Open'], errors='coerce')
-data['ETH_Intraday_Range'] = pd.to_numeric(data['ETH_Intraday_Range'], errors='coerce')
-
 # Calculate intraday volatility for Tesla and Ethereum
 data['tesla_intraday_volatility'] = (data['Tesla_Intraday_Range'] / data['Tesla_Open']) * 100
 data['eth_intraday_volatility'] = (data['ETH_Intraday_Range'] / data['ETH_Open']) * 100
@@ -191,6 +183,8 @@ plt.show()
 
 # Correlation Matrix
 correlation_matrix = data[['tesla_intraday_volatility', 'eth_intraday_volatility', '1_mo_change', '3_mo_change']].corr()
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
 print("Correlation Matrix:\n", correlation_matrix)
 
 # Regression Analysis

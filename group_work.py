@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from debugpy.adapter.components import missing
 
 tesla = pd.read_csv("Individual_work_furkan/tesla_prices.csv")
-interest = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield_Curve.csv")
+interest = pd.read_csv("Individual_work_sujee/Cleaned_Treasury_Yield.csv")
 ethereum = pd.read_csv("Individual_work_yigit/ethereum_prices.csv")
 
 interest.rename(columns ={"date": "Date"}, inplace=True)
